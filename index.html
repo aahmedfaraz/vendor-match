@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>VendorMatch — Agentic AI Hackathon POC</title>
+  <meta name="description"
+    content="VendorMatch POC: AI-powered vendor discovery agent for businesses and homes. Built for the Agentic AI Hackathon with IBM watsonx Orchestrate by lablab.ai." />
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-subtle: #f9fbff;
+      --border-subtle: #dde4f0;
+      --accent: #0f62fe;
+      --accent-soft: rgba(15, 98, 254, 0.08);
+      --accent2: #11967e;
+      --muted: #6b7789;
+      --text-main: #111827;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08);
+      --chip-bg: #eef2ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at top left, rgba(15, 98, 254, 0.1), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(17, 150, 126, 0.1), transparent 60%),
+        var(--bg);
+    }
+
+    .outer-shell {
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 28px 32px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 248, 255, 0.98));
+      border-radius: 28px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(15, 98, 254, 0.10), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(17, 150, 126, 0.10), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .content-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .header-main {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-mark {
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      background: conic-gradient(from 180deg at 50% 50%, #0f62fe, #11967e, #0f62fe);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 10px 28px rgba(15, 98, 254, 0.35);
+    }
+
+    .logo-text-topline {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .logo-text-main {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--text-main);
+    }
+
+    .hackathon-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(15, 98, 254, 0.25);
+      color: #1d3557;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .hackathon-pill span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 32px;
+      line-height: 1.08;
+      color: #020617;
+    }
+
+    h1 span.highlight {
+      background: linear-gradient(135deg, #0f62fe, #11967e);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    p.lead {
+      color: var(--muted);
+      max-width: 72ch;
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+      font-size: 11px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #0f62fe, #11967e);
+    }
+
+    .card {
+      background: var(--surface);
+      padding: 18px 18px 20px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      border: 1px solid rgba(209, 213, 219, 0.7);
+    }
+
+    .card-subtle {
+      background: var(--surface-subtle);
+      border-style: dashed;
+      border-color: rgba(148, 163, 184, 0.55);
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .how-it-works ol {
+      margin: 8px 0 0 18px;
+      padding: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .how-it-works li + li {
+      margin-top: 4px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .feature {
+      padding: 14px;
+      border-radius: 14px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .feature h3 {
+      margin: 0 0 6px 0;
+      font-size: 14px;
+      color: #0f172a;
+    }
+
+    .feature p.lead {
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .integrations {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .chip {
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      border: 1px solid rgba(129, 140, 248, 0.45);
+      color: #3730a3;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    footer {
+      margin-top: 30px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .footer-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 640px) {
+      .outer-shell {
+        padding: 18px 12px;
+      }
+
+      .container {
+        padding: 20px 18px 24px;
+        border-radius: 22px;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .logo-mark {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+
+      .features {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="outer-shell">
+    <div class="container">
+      <div class="content-inner">
+        <header>
+          <div class="header-main">
+            <div class="logo-mark">VM</div>
+            <div>
+              <div class="logo-text-topline">Vendor Discovery Agent</div>
+              <div class="logo-text-main">VendorMatch • Team Centaurus</div>
+            </div>
+          </div>
+          <a class="hackathon-pill"
+            href="https://lablab.ai/event/agentic-ai-hackathon-ibm-watsonx-orchestrate" target="_blank"
+            rel="noreferrer">
+            <span>AI</span>
+            Agentic AI Hackathon with IBM&nbsp;watsonx Orchestrate
+          </a>
+        </header>
+
+        <main class="hero">
+          <section>
+            <h1>
+              <span class="highlight">VendorMatch</span> — premium AI agent for vendor discovery.
+            </h1>
+            <p class="lead">
+              A focused proof‑of‑concept built for the
+              <a href="https://lablab.ai/event/agentic-ai-hackathon-ibm-watsonx-orchestrate" target="_blank"
+                rel="noreferrer">Agentic AI Hackathon with IBM&nbsp;watsonx Orchestrate by lablab.ai</a>.
+              Ask the VendorMatch agent for trusted US‑based vendors and explore how agentic workflows can extend to
+              scheduling and bookings in future iterations.
+            </p>
+            <p class="lead" style="margin-top:8px;font-size:13px;">
+              Crafted by <strong>Team Centaurus</strong> — <strong>Ahmed Faraz</strong> &amp; <strong>Abdullah
+                Khetran</strong>.
+            </p>
+            <p class="lead" style="margin-top:8px;font-size:13px;">
+              To try it, click the chat button in the bottom‑right corner of the screen to open the chatbot window and
+              start a conversation with the VendorMatch agent.
+            </p>
+
+            <div class="badge-row">
+              <div class="badge">
+                <span class="badge-dot"></span>
+                Built on IBM watsonx Orchestrate
+              </div>
+              <div class="badge">
+                <span class="badge-dot"></span>
+                Multi‑agent workflow vision
+              </div>
+              <div class="badge">
+                <span class="badge-dot"></span>
+                Hackathon POC — November 2025
+              </div>
+            </div>
+
+            <div class="card how-it-works" style="margin-top:18px">
+              <div class="card-title">How this POC works</div>
+              <ol>
+                <li>You describe the service you need, your location, and rough budget.</li>
+                <li>The VendorMatch agent searches the curated dataset and surfaces the most relevant vendors.</li>
+                <li>You review details like location, rating, and pricing — a future companion agent will handle
+                  calendar‑aware booking and follow‑ups.</li>
+              </ol>
+            </div>
+
+            <div class="features">
+              <div class="feature">
+                <h3>Intelligent Vendor Search</h3>
+                <p class="lead">Quickly discover US vendors tuned to your constraints, instead of scrolling endless
+                  directories.</p>
+              </div>
+              <div class="feature">
+                <h3>Hackathon‑Ready Demo</h3>
+                <p class="lead">A focused experience that showcases what a single well‑designed agent can already
+                  deliver.</p>
+              </div>
+              <div class="feature">
+                <h3>Future Booking Agent</h3>
+                <p class="lead">The roadmap includes a second agent responsible for booking and vendor coordination.
+                </p>
+              </div>
+            </div>
+
+            <div class="card card-subtle" style="margin-top:18px">
+              <div class="card-title">Integrations — designed to extend</div>
+              <div class="integrations">
+                <span class="chip">WhatsApp</span>
+                <span class="chip">Microsoft Teams</span>
+                <span class="chip">Slack</span>
+                <span class="chip">Facebook Messenger</span>
+                <span class="chip">Web Chat</span>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:18px; text-align:left;">
+              <div class="card-title">Team Centaurus</div>
+              <p style="margin:4px 0 2px;font-size:13px;">
+                Ahmed Faraz — <a href="mailto:ahmedfaraz.contact@gmail.com">Email</a> ·
+                <a href="https://github.com/aahmedfaraz" target="_blank" rel="noreferrer">GitHub</a> ·
+                <a href="https://www.linkedin.com/in/ahmedfaraz/" target="_blank" rel="noreferrer">LinkedIn</a>
+              </p>
+              <p style="margin:2px 0 0;font-size:13px;">
+                Abdullah Khetran — <a href="mailto:khetranabdullah@gmail.com">Email</a> ·
+                <a href="https://github.com/AbdullahKhetran" target="_blank" rel="noreferrer">GitHub</a> ·
+                <a href="https://www.linkedin.com/in/abdullah-khetran/" target="_blank" rel="noreferrer">LinkedIn</a>
+              </p>
+            </div>
+          </section>
+        </main>
+
+        <footer>
+          <div class="footer-meta">
+            <div>© VendorMatch — Hackathon POC • Built with IBM watsonx Orchestrate •
+              <strong>Team Centaurus</strong>: <strong>Ahmed Faraz</strong> &amp; <strong>Abdullah Khetran</strong>
+            </div>
+            <div>Created for the
+              <a href="https://lablab.ai/event/agentic-ai-hackathon-ibm-watsonx-orchestrate" target="_blank"
+                rel="noreferrer">Agentic AI Hackathon with IBM&nbsp;watsonx Orchestrate by lablab.ai</a>.
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <div id="root"></div>
+
+  <script>
+    window.wxOConfiguration = {
+      orchestrationID: "0b12b639f755401a91077ae849e9e9e9_91e32275-cd4b-48e9-99d4-1b40ab511b8e",
+      hostURL: "https://eu-gb.watson-orchestrate.cloud.ibm.com",
+      rootElementID: "root",
+      deploymentPlatform: "ibmcloud",
+      crn: "crn:v1:bluemix:public:watsonx-orchestrate:eu-gb:a/0b12b639f755401a91077ae849e9e9e9:91e32275-cd4b-48e9-99d4-1b40ab511b8e::",
+      chatOptions: {
+          agentId: "6931ffd4-4153-40ed-aebe-69d40dd2091f", 
+      }
+    };
+    setTimeout(function () {
+      const script = document.createElement('script');
+      script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
+      script.addEventListener('load', function () {
+          wxoLoader.init();
+      });
+      document.head.appendChild(script);
+    }, 0);                     
+  </script>
+
+</body>
+
+</html>
