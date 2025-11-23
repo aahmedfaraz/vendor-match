@@ -230,7 +230,7 @@
       font-size: 13px;
     }
 
-    .how-it-works li + li {
+    .how-it-works li+li {
       margin-top: 4px;
     }
 
@@ -346,9 +346,8 @@
               <div class="logo-text-main">VendorMatch • Team Centaurus</div>
             </div>
           </div>
-          <a class="hackathon-pill"
-            href="https://lablab.ai/event/agentic-ai-hackathon-ibm-watsonx-orchestrate" target="_blank"
-            rel="noreferrer">
+          <a class="hackathon-pill" href="https://lablab.ai/event/agentic-ai-hackathon-ibm-watsonx-orchestrate"
+            target="_blank" rel="noreferrer">
             <span>AI</span>
             Agentic AI Hackathon with IBM&nbsp;watsonx Orchestrate
           </a>
@@ -470,14 +469,15 @@
       deploymentPlatform: "ibmcloud",
       crn: "crn:v1:bluemix:public:watsonx-orchestrate:eu-gb:a/0b12b639f755401a91077ae849e9e9e9:91e32275-cd4b-48e9-99d4-1b40ab511b8e::",
       chatOptions: {
-          agentId: "6931ffd4-4153-40ed-aebe-69d40dd2091f", 
+        agentId: "6931ffd4-4153-40ed-aebe-69d40dd2091f",
+        agentEnvironmentId: "87d4d227-2f07-47b0-8322-a8466b419d7d",
       }
     };
     setTimeout(function () {
       const script = document.createElement('script');
       script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
       script.addEventListener('load', function () {
-          wxoLoader.init();
+        wxoLoader.init();
       });
       document.head.appendChild(script);
     }, 0);                     
