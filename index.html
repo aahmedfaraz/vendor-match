@@ -276,6 +276,14 @@
       font-weight: 500;
     }
 
+    /* Ensure IBM watsonx Orchestrate chat container does not affect layout flow */
+    #root {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      z-index: 99999;
+    }
+
     footer {
       margin-top: 30px;
       color: var(--muted);
@@ -463,14 +471,13 @@
 
   <script>
     window.wxOConfiguration = {
-      orchestrationID: "0b12b639f755401a91077ae849e9e9e9_91e32275-cd4b-48e9-99d4-1b40ab511b8e",
-      hostURL: "https://eu-gb.watson-orchestrate.cloud.ibm.com",
+      orchestrationID: "47606632b8be46959962c11e21b286cf_f2d316b8-e970-4258-9e70-4cd05fdad3b9",
+      hostURL: "https://us-south.watson-orchestrate.cloud.ibm.com",
       rootElementID: "root",
       deploymentPlatform: "ibmcloud",
-      crn: "crn:v1:bluemix:public:watsonx-orchestrate:eu-gb:a/0b12b639f755401a91077ae849e9e9e9:91e32275-cd4b-48e9-99d4-1b40ab511b8e::",
+      crn: "crn:v1:bluemix:public:watsonx-orchestrate:us-south:a/47606632b8be46959962c11e21b286cf:f2d316b8-e970-4258-9e70-4cd05fdad3b9::",
       chatOptions: {
-        agentId: "6931ffd4-4153-40ed-aebe-69d40dd2091f",
-        agentEnvironmentId: "87d4d227-2f07-47b0-8322-a8466b419d7d",
+        agentId: "40cea4f9-5bc5-4956-a20e-f20e48d75d4e",
       }
     };
     setTimeout(function () {
